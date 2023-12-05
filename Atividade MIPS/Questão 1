@@ -1,0 +1,42 @@
+--Começando com inicialização de dados--
+.data
+vetor:  .word 6, 4, 10, 3, 8      --vetor com 5 elementos--
+
+
+.text
+main:
+    la   $a0, vetor       --Aqui carrega o endereço do vetor em $a0--
+    li   $a1, 5           --Carrega o tamanho do vetor em $a1--
+
+    jal  encontraMaior    -- Chama a função encontraMaior--
+
+    -- O resultado estará em $v0, imprime o resultado---
+    li   $v0, 1          -- Código do sistema para imprimir inteiro--
+    move $a0, $v0         --Move o valor a ser impresso para $a0--
+    syscall
+
+    # Encerra o programa
+    li   $v0, 10           --Eencerramento do programa--
+    syscall
+
+-- Função para encontrar o maior valor em um vetor
+encontraMaior:
+    
+    --$a0 - endereço do vetor
+    -- $a1 - tamanho do vetor
+
+    li   $v0, 0           --Inicializa $v0 com o valor mínimo possível
+
+  -- Loop para percorrer o vetor
+    loop:
+        lw   $t0, 0($a0)   --Aqui é carregado o valor atual do vetor em $t0
+        bge  $t0, $v0, notMaior  -- Se $t0 >= $v0, pula para notMaior
+        move $v0, $t0       -- Atualiza $v0 com o novo maior valor
+        notMaior:
+
+        addi $a0, $a0, 4    -- Avança para o próximo elemento do vetor
+        addi $a1, $a1, -1   -- Decrementa o contador
+
+        bnez $a1, loop      --Se o contador não for zero, repete o loop
+
+    jr $ra                 --Retorna
