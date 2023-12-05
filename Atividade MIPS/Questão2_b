@@ -1,0 +1,48 @@
+.data
+    i:  .word 0       
+    j:  .word 12      
+.text
+    main:
+        --Lê o valor de i
+        li $v0, 5       
+        syscall
+        sw $v0, i       --Armazena o valor lido na variável i
+
+ ---é carregado os valores de 'i' e 'j' nos registradores
+        lw $t0, i
+        lw $t1, j
+
+        --Verifica a condição: i < j
+        blt $t0, $t1, if_block
+        # Caso contrário, vá para o bloco else
+        j else_block
+
+    if_block:
+
+        mul $t2, $t0, 2      --$t2 = 2 * i
+        addi $t2, $t2, 8     -- $t2 = 2 * i + 8
+        sw $t2, j            --Valores atualizados
+
+        # Imprime o valor de j
+        li $v0, 1            
+        lw $a0, j            
+        syscall
+        j end
+
+    else_block:
+        
+        mul $t3, $t0, 8      # $t3 = 8 * i
+        lw $t4, j            # Carrega o valor de j em $t4
+        add $t5, $t3, $t4    # $t5 = 8 * i + j
+        addi $t5, $t5, 6     # $t5 = 8 * i + j + 6
+        addi $t5, $t5, 12    # $t5 = 8 * i + j + 6 + 12
+        sw $t5, j            # Atualiza o valor de j com 8 * i + j + 6 + 12
+
+        li $v0, 1            # Chamada de sistema para imprimir inteiro
+        lw $a0, j            # Carrega o valor de j em $a0
+        syscall
+
+    end:
+
+        li $v0, 10           
+        syscall
