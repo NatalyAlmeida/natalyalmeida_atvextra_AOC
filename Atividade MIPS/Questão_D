@@ -1,0 +1,26 @@
+.data
+    v1: .word 0       
+    v2: .float 0.0    --  variável v2 com valor 0.0
+
+    format: .asciiz "v1=%d, v2=%.2f\n"  
+
+.text
+    main:
+        li $v0, 5           
+        syscall
+        sw $v0, v1         
+
+        li $v0, 6         
+        syscall
+        s.s $f0, v2         
+
+      
+        li $v0, 4           -- Chamada de sistema para imprimir string
+        la $a0, format    
+        lw $a1, v1          
+        l.s $f12, v2        -- Carrega o valor de v2 em $f12
+        syscall
+
+      
+        li $v0, 10         
+        syscall
