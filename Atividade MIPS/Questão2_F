@@ -1,0 +1,89 @@
+.data
+    indice: .word 0        
+    nota:   .space 16     
+    total:  .word 0       
+
+    prompt1: .asciiz "Valor "
+    prompt2: .asciiz "Valores informados: "
+    prompt3: .asciiz "\nMedia: %d\n"
+
+.text
+    main:
+        
+        la $t0, indice           
+        li $t1, 0                
+        li $t2, 4                
+
+    loop_read:
+        bge $t1, $t2, loop_print # Se indice >= 4, vá para o loop de impressão
+
+        
+        li $v0, 4             
+        la $a0, prompt1         
+        syscall
+
+        la $a0, ($t0)            
+        li $v0, 5               
+        syscall
+        sw $v0, 0($t0)          -- o valor lido em nota[indice] é armazenado
+
+      
+        addi $t0, $t0, 4
+        addi $t1, $t1, 1        
+        j loop_read              --volta para o início do loop de leitura
+
+    loop_print:
+     
+        li $v0, 4               
+        la $a0, prompt2          
+        syscall
+
+       
+        li $t1, 0               
+        li $t3, 0                --Inicializa total com 0
+
+    loop_print_values:
+        bge $t1, $t2, print_avg  - se indice >= 4, vá para a impressão da média
+
+        # Imprime o valor de nota[indice]
+        lw $a0, ($t1)          
+        li $v0, 1               
+        syscall
+
+        # Imprime um espaço
+        li $v0, 4                
+        la $a0, " "              
+        syscall
+
+      
+        lw $t4, ($t1)            
+        add $t3, $t3, $t4       
+
+      
+        addi $t1, $t1, 4         --Incrementa o endereço de indice
+        j loop_print_values    
+
+    print_avg:
+        -- nova linha
+        li $v0, 4               
+        la $a0, "\n"             
+        syscall
+
+        --calculo da média e imprime
+        li $t5, 4                
+        div $t3, $t5             --calcula total/4
+        mflo $t3                 -- move o resultado para $t3
+
+        --- mensagem "Media: "
+        li $v0, 4               
+        la $a0, prompt3         
+        syscall
+
+  
+        li $v0, 1                
+        move $a0, $t3           
+        syscall
+
+        
+        li $v0, 10              
+        syscall
