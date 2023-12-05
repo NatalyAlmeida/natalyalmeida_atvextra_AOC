@@ -1,0 +1,21 @@
+.data
+    a:  .word 12    
+    b:  .word 5       
+    t:  .word 0       
+
+.text
+    main:
+        lw $t0, a      
+        lw $t1, b      
+        add $t2, $t0, $t0   # $t2 = a + a
+        add $t3, $t2, $t1   # $t3 = (a + a) + b
+        sub $t4, $t3, $t0   # $t4 = (a + a) + b - a
+        sw $t4, t        - Armazena o resultado na variável t
+
+        --Imprime o resultado--
+        li $v0, 1       - Chamada de sistema para imprimir inteiro
+        lw $a0, t       - Carrega o valor de t em $a0
+        syscall
+
+        li $v0, 10   
+        syscall
