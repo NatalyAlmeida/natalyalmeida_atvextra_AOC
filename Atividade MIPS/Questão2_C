@@ -1,0 +1,37 @@
+.data
+    i:  .word 0       # Inicializa a variável i com valor 0
+    j:  .word 5       # Inicializa a variável j com valor 5
+    s:  .word 1       # Inicializa a variável s com valor 1
+
+.text
+    main:
+        --i com 0
+        li $t0, 0
+        sw $t0, i
+
+        --Carregandos os valores apresentados nos registradores
+        lw $t1, i
+        lw $t2, j
+        lw $t3, s
+
+    for_loop:
+        -- i < j
+        bge $t1, $t2, end_for
+
+        -- loop: s = s + i
+        add $t3, $t3, $t1
+
+        -- Incrementa i
+        addi $t1, $t1, 1
+
+        -- Volta para o início do loop
+        j for_loop
+
+    end_for:
+
+        li $v0, 1
+        lw $a0, s            
+        syscall
+
+        li $v0, 10           
+        syscall
